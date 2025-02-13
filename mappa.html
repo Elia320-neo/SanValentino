@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Noi</title>
+
+  <!-- Import Google Fonts (stesso font della home) -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Importa Leaflet CSS per la mappa -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    /* Stile per la navigazione */
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topnav a {
+      float: left;
+      color: rgba(253, 173, 199, 0.76);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: white;
+    }
+
+    /* Stile per il body */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: rgba(253, 173, 199, 0.8);
+      color: #800606;
+      text-align: center;
+      overflow: hidden;
+      padding-top: 50px;
+      scroll-behavior: smooth;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(253, 173, 199, 0.5);
+      padding-top: 0;
+    }
+
+    /* Aggiungi un po' di spazio alla mappa e ridimensiona */
+    #map {
+      height: 400px;
+      width: 80%; /* Ridimensiona la mappa */
+      margin: 20px auto;
+    }
+
+    /* Stile per la sezione dei bottoni e descrizioni */
+    .buttons-container {
+      margin-top: 20px;
+    }
+
+    .button {
+      background-color: rgba(253, 173, 199, 0.76);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 10px;
+    }
+
+    .button:hover {
+      background-color: rgba(253, 173, 199, 1);
+    }
+
+    /* Posizionamento del testo descrizione */
+    #description {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #800606;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Animazione dei cuori */
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .hearts span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: url('img/Cuore_rosso.png') no-repeat center center;
+      background-size: contain;
+      animation: animate 5s linear infinite;
+      bottom: -150px;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-500px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Aggiungi la navigazione in alto -->
+<div class="topnav">
+  <a href="index.html">Home</a>
+  <a href="galleria.html">Galleria</a>
+  <a class="active" href="mappa.html">Mappa</a>
+  <a href="lista.html">Desideri</a>
+
+</div>
+
+<!-- Cuori animati -->
+<div class="hearts">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<h1>I luoghi più iconici</h1>
+
+<!-- Div per la mappa -->
+<div id="map"></div>
+
+<!-- Bottone e descrizioni -->
+<div class="buttons-container">
+  <button class="button" onclick="showDescription('bronx')">Bronx</button>
+  <button class="button" onclick="showDescription('ciro-pio')">Ciro e Pio</button>
+  <button class="button" onclick="showDescription('casa-bia')">Casa Bia</button>
+  <button class="button" onclick="showDescription('casa-eli')">Casa Eli</button>
+  <button class="button" onclick="showDescription('shopping')">Shopping</button>
+  <button class="button" onclick="showDescription('ancona-city')">Ancona la City</button>
+  <button class="button" onclick="showDescription('casa-nonna')">Casa Nonna</button>
+  <button class="button" onclick="showDescription('centro-jesi')">Centro Jesi</button>
+</div>
+
+<!-- Descrizione dinamica -->
+<div id="description"></div>
+
+<!-- Importa Leaflet JS per la mappa -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  // Inizializza la mappa
+  var map = L.map('map').setView([43.53167, 13.25639], 15); // Imposta la posizione sul Parco Enrico Mattei con zoom 15
+
+  // Aggiungi il layer della mappa (OpenStreetMap)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Aggiungi il marker per il Parco Enrico Mattei
+  var markerParco = L.marker([43.53167, 13.25639]).addTo(map);
+  markerParco.bindPopup("<b>Bronx</b><br>Il luogo più importante , dove tutto è iniziato le emozioni più forti ed intime sono uscite qui a dimostrare che non serve un posto speciale per stare bene ma solo le persone giuste nel momento giusto. Ti amo tanto amore , questo posto satà sempre nel mio cuore ");
+
+  // Aggiungi il marker per Ciro e Pio
+  var markerCiroPio = L.marker([43.52222, 13.24000]).addTo(map);  // Ciro e Pio
+  markerCiroPio.bindPopup("<b>Ciro e Pio</b><br>D'inverno è un ritrovo sicuro per passare una serata a bere una ciccolata calda o un tè e condividere i momenti più belli e farsi due risate parlando di gossip.");
+
+  // Aggiungi marker per Casa Bia
+  var markerCasaBia = L.marker([43.53250, 13.24917]).addTo(map);
+  markerCasaBia.bindPopup("<b>Casa di  Bia</b><br>Luogo perfetto per rilassarsi insieme guardando film e serie tv su tutte le piattaforme streaming. Cucina pazzesca perchè si fa in due e tutto diventa più buono.");
+
+  // Aggiungi marker per Casa Eli
+  var markerCasaEli = L.marker([43.53306, 13.25222]).addTo(map);
+  markerCasaEli.bindPopup("<b>Casa di  Eli</b><br>Luminosa e innovativa crea un ambiente piacevole per riposarsi e godersi un bel bagno in vasca o un bel massagio alla schiena.");
+
+  // Aggiungi marker per Shopping
+  var markerShopping = L.marker([43.29306, 13.70194]).addTo(map);
+  markerShopping.bindPopup("<b>Shopping</b><br>Quando ci va di fare qualcosa di diverso e cambiare ambiente, Civitanova è il luogo idelae ci facciamo un viaggetto verso una gioranta di shopping , giri per i negozi pieni di cose da vedere e desiderare.");
+
+  // Aggiungi marker per Ancona la City
+  var markerAnconaCity = L.marker([43.61972, 13.51083]).addTo(map);
+  markerAnconaCity.bindPopup("<b>Ancona la City</b><br>Viaggiare in auto con la musica in sottofondo e la luce del tramonto che riflette sui vetri dell'auto. Passegiare per Ancona mano nella mano, cazzeggiare dentro Tiger,  mangiare il mc e poi tornare a casa sapendo di avere la persona più bella del mondo al proprio fianco. Pazzesco lo voglio  fare con te per tutta la vita.  ");
+
+  // Aggiungi marker per Casa Nonna
+  var markerCasaNonna = L.marker([43.51944, 13.22917]).addTo(map);
+  markerCasaNonna.bindPopup("<b>Casa di Nonna</b><br>Il nostro piccolo luogo segreto per ricavarci uno spazio tutto nostro e passare il tempo a starci vicino e coccolarci quando ne abbiamo bisogno. ");
+
+  // Aggiungi marker per Centro Jesi
+  var markerCentroJesi = L.marker([43.51944, 13.23917]).addTo(map);
+  markerCentroJesi.bindPopup("<b>Centro di Jesi</b><br>Passeggiate indimenticabili e visite ai negozi che amiamo di pìù e che ci fanno sentire a casa. ");
+
+  // Funzione per mostrare le descrizioni quando un bottone è cliccato
+  function showDescription(posto) {
+    var description = '';
+
+    if (posto === 'bronx') {x
+      description = 'Il Parco Enrico Mattei è un luogo perfetto per rilassarsi e godere della natura.';
+    } else if (posto === 'ciro-pio') {
+      description = 'Il ristorante Ciro e Pio è famoso per i suoi piatti tipici delle Marche, un posto ideale per una cena tradizionale.';
+    } else if (posto === 'casa-bia') {
+      description = 'La casa di Bia, un posto tranquillo e accogliente.';
+    } else if (posto === 'casa-eli') {
+      description = 'Casa Eli, dove la tranquillità regna sovrana.';
+    } else if (posto === 'shopping') {
+      description = 'Il centro commerciale è il posto ideale per fare shopping e rilassarsi.';
+    } else if (posto === 'ancona-city') {
+      description = 'Ancona, una città ricca di storia e bellezze da scoprire.';
+    } else if (posto === 'casa-nonna') {
+      description = 'Casa della nonna, un angolo di pace e affetto.';
+    } else if (posto === 'centro-jesi') {
+      description = 'Il centro di Jesi è il cuore della città, sempre vivo e dinamico.';
+    }
+
+    document.getElementById('description').innerText = description;
+  }
+</script>
+<script>
+  const hearts = document.querySelector('.hearts');
+
+  function createHeart() {
+    const heart = document.createElement('span');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+    hearts.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }
+
+  setInterval(createHeart, 300);
+</script>
+</body>
+</html>

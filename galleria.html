@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Noi</title>
+
+  <!-- Import Google Fonts (stesso font della home) -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topnav a {
+      float: left;
+      color: rgba(253, 173, 199, 0.76);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: white;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-color: rgba(253, 173, 199, 0.8);
+      color: #800606;
+      text-align: center;
+      padding-top: 50px;
+      scroll-behavior: smooth;
+      overflow: auto; /* Permette lo scorrimento della pagina */
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      margin-top: -20px;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(253, 173, 199, 0.5);
+      padding-top: 0;
+    }
+
+    /* Stile della galleria */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      padding: 80px 20px 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animazione dei cuori */
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .hearts span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: url('img/Cuore_rosso.png') no-repeat center center;
+      background-size: contain;
+      animation: animate 5s linear infinite;
+      bottom: -150px;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-500px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Aggiungi i cuori anche qui -->
+<div class="hearts">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="topnav">
+  <a href="index.html">Home</a> <!-- Torna alla home -->
+  <a class="active" href="galleria.html">Galleria</a>
+  <a href="mappa.html">Mappa</a>
+  <a href="lista.html">Desideri</a>
+</div>
+
+<div class="gallery">
+  <h1>I momenti più belli</h1>
+  <img src="img/photo1.jpg" alt="Foto 1">
+  <img src="img/photo2.jpg" alt="Foto 2">
+  <img src="img/photo3.jpg" alt="Foto 3">
+  <img src="img/photo4.jpg" alt="Foto 4">
+  <img src="img/photo5.jpg" alt="Foto 5">
+  <img src="img/photo6.jpg" alt="Foto 6">
+  <!-- Aggiungi altre immagini qui -->
+</div>
+
+<!-- Script per generare i cuori -->
+<script>
+  const hearts = document.querySelector('.hearts');
+
+  function createHeart() {
+    const heart = document.createElement('span');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+    hearts.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }
+
+  setInterval(createHeart, 300);
+</script>
+
+</body>
+
+</html>

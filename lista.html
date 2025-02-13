@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Noi</title>
+
+  <!-- Import Google Fonts (stesso font della home) -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topnav a {
+      float: left;
+      color: rgba(253, 173, 199, 0.76);
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: rgba(253, 173, 199, 0.76);
+      color: white;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-color: rgba(253, 173, 199, 0.8);
+      color: #800606;
+      text-align: center;
+      padding-top: 50px;
+      scroll-behavior: smooth;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(253, 173, 199, 0.5);
+      padding-top: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      margin-top: 100px;
+    }
+
+    /* Lista desideri */
+    .wishlist {
+      margin: 20px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .wishlist ul li {
+      background-color: rgba(253, 173, 199, 0.9);
+      color: white;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modifica font della scritta "Desideri Aggiunti" */
+    .wishlist h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #800606;
+      text-shadow: 1px 1px 4px rgba(253, 173, 199, 0.5);
+    }
+
+    /* Barra di inserimento desideri più lunga */
+    input[type="text"] {
+      width: 60%;  /* Cambia questa percentuale per fare la barra più lunga */
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    /* Bottone di aggiunta desiderio */
+    button {
+      padding: 10px 20px;
+      background-color: #800606;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: rgba(253, 173, 199, 0.76);
+    }
+
+    /* Animazione dei cuori */
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .hearts span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: url('img/Cuore_rosso.png') no-repeat center center;
+      background-size: contain;
+      animation: animate 5s linear infinite;
+      bottom: -150px;
+    }
+
+    @keyframes animate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-500px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Aggiungi i cuori anche qui -->
+<div class="hearts">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- Menu -->
+<div class="topnav">
+  <a href="index.html">Home</a>
+  <a href="galleria.html">Galleria</a>
+  <a href="mappa.html">Mappa</a>
+  <a class="active" href="lista.html">Desideri</a>
+</div>
+
+<div class="container">
+  <h1>La tua Lista dei Desideri</h1>
+
+  <!-- Lista desideri -->
+  <div class="wishlist">
+    <h2>Desideri Aggiunti</h2>
+    <ul id="wishlist">
+      <!-- Gli elementi della lista desideri appariranno qui -->
+    </ul>
+
+    <input type="text" id="newItem" placeholder="Aggiungi un desiderio..." />
+    <button onclick="addItem()">Aggiungi</button>
+  </div>
+</div>
+
+<!-- Script per gestire la lista dei desideri -->
+<script>
+  // Funzione per aggiungere un elemento alla lista
+  function addItem() {
+    const item = document.getElementById("newItem").value;
+    if (item) {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      wishlist.push(item);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      renderList();
+      document.getElementById("newItem").value = ""; // Reset campo input
+    }
+  }
+
+  // Funzione per rimuovere un elemento dalla lista
+  function removeItem(index) {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    wishlist.splice(index, 1);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    renderList();
+  }
+
+  // Funzione per renderizzare la lista
+  function renderList() {
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlistContainer = document.getElementById("wishlist");
+    wishlistContainer.innerHTML = "";
+    wishlist.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      const removeButton = document.createElement("button");
+      removeButton.textContent = "Rimuovi";
+      removeButton.onclick = () => removeItem(index);
+      li.appendChild(removeButton);
+      wishlistContainer.appendChild(li);
+    });
+  }
+
+  // Carica la lista dei desideri quando la pagina viene caricata
+  document.addEventListener("DOMContentLoaded", function () {
+    renderList();
+  });
+</script>
+<script>
+  const hearts = document.querySelector('.hearts');
+
+  function createHeart() {
+    const heart = document.createElement('span');
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+    hearts.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
+  }
+
+  setInterval(createHeart, 300);
+</script>
+
+</body>
+</html>
